@@ -1,4 +1,4 @@
-import socket, queue, threading, time
+import socket, queue, threading, datetime
 from Packet import Packet
 from Types import Types
 
@@ -20,7 +20,7 @@ class SendThread(threading.Thread):
 			packet = self.send_queue.get(True)
 			self.socket.sendto(packet.pack(), packet.connection)
 			if packet.handlerId != Types.VERIFYHANDLER:
-				packet.last_sent = time.time()
+				packet.last_sent = datetime.datetime.now()
 				packet.tries += 1
 				self.out_queue.put(packet)
 				self.data_out.append(packet)

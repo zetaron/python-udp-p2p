@@ -1,4 +1,4 @@
-import queue, threading, time
+import queue, threading, datetime
 from Packet import Packet
 
 class WatchThread(threading.Thread):
@@ -17,7 +17,9 @@ class WatchThread(threading.Thread):
 		while self.running:
 			packet = self.out_queue.get(True)
 			if packet.verified == False:
-				if packet.tries < 3:
-					if (time.time() - packet.last_sent) >= 3000:
+				if packet.tries < 4:
+					if  (datetime.datetime.now() - packet.last_sent).seconds >= 3:
 						self.send_queue.put(packet)
 						self.data_out.remove(packet)
+					else:
+						self.out_queue.put(packet)

@@ -4,8 +4,8 @@ from Packet import Packet
 from Types import Types
 
 class ReceiveThread(threading.Thread):
-	def __init__(self, socket, p2p):
-		self.socket = socket
+	def __init__(self, sock, p2p):
+		self.sock = sock
 		self.p2p = p2p
 		
 		threading.Thread.__init__(self)
@@ -16,7 +16,7 @@ class ReceiveThread(threading.Thread):
 	def run(self):
 		self.running = 1
 		while self.running:
-			inputready,outputready,exceptready = select.select([self.socket],[],[],5)
+			inputready,outputready,exceptready = select.select([self.sock],[],[])
 			for sock in inputready:
 				data, addr = sock.recvfrom(1024)
 				handlerId, = struct.unpack(">h", data[:2])

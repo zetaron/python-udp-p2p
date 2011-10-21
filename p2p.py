@@ -11,10 +11,10 @@ from Handlers.VerifyHandler import VerifyHandler
 from Types import Types
 
 class P2P(object):
-	def __init__(self, connections = [], port = 2222):
-		self.socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-		self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-		self.socket.bind(('', port))
+	def __init__(self, connections = [], port = 3333):
+		self.sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+		self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+		self.sock.bind(('', port))
 		
 		self.connections = connections
 		self.handler = {}
@@ -22,8 +22,8 @@ class P2P(object):
 		self.out_queue = queue.Queue()
 		self.data_out = []
 
-		self.receiveThread = ReceiveThread(self.socket, self)
-		self.sendThread = SendThread(self.socket, self.send_queue, self.out_queue, self.data_out)
+		self.receiveThread = ReceiveThread(self.sock, self)
+		self.sendThread = SendThread(self.sock, self.send_queue, self.out_queue, self.data_out)
 		self.watchThread = WatchThread(self.out_queue, self.send_queue, self.data_out)
 		
 		self.receiveThread.start()
