@@ -1,4 +1,4 @@
-from Handlers.Handler import Handler
+from p2p.Handlers import *
 
 class VerifyHandler(Handler):
 	def handle(self, packet):

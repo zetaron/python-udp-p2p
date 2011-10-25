@@ -1,7 +1,7 @@
 import socket, threading, struct, select
-
-from Packet import Packet
-from Types import Types
+from p2p import *
+#from p2p.Packet import Packet
+#from p2p.Types import Types
 
 class ReceiveThread(threading.Thread):
 	def __init__(self, sock, p2p):

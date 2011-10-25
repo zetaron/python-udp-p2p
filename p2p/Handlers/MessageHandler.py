@@ -1,4 +1,5 @@
-from Handlers.Handler import Handler
+#from p2p.Handlers.Handler import Handler
+from p2p.Handlers import *
 
 class MessageHandler(Handler):
 	def handle(self, packet):

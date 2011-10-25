@@ -1,14 +1,15 @@
 import queue, socket
-from Packet import Packet
+from p2p import *
+#from p2p.Packet import Packet
 
-from ReceiveThread import ReceiveThread
-from SendThread import SendThread
-from WatchThread import WatchThread
+#from p2p.ReceiveThread import ReceiveThread
+#from p2p.SendThread import SendThread
+#from p2p.WatchThread import WatchThread
 
-from Handlers.Handler import Handler
-from Handlers.VerifyHandler import VerifyHandler
+#from p2p.Handlers.Handler import Handler
+#from p2p.Handlers.VerifyHandler import VerifyHandler
 
-from Types import Types
+#from p2p.Types import Types
 
 class P2P(object):
 	def __init__(self, connections = [], port = 3333):
@@ -36,6 +37,9 @@ class P2P(object):
 		self.receiveThread.stop()
 		self.sendThread.stop()
 		self.watchThread.stop()
+	
+	def close(self):
+		self.stop()
 	
 	def __del__(self):
 		self.stop()

@@ -1,6 +1,7 @@
 import socket, queue, threading, datetime
-from Packet import Packet
-from Types import Types
+#from p2p.Packet import Packet
+#from p2p.Types import Types
+from p2p import *
 
 class SendThread(threading.Thread):
 	def __init__(self, socket, send_queue, out_queue, data_out):

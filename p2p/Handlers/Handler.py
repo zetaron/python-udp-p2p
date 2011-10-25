@@ -1,4 +1,4 @@
-from Packet import Packet
+#from p2p.Packet import Packet
 
 class Handler(object):
 	def __init__(self, p2p):

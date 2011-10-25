@@ -1,5 +1,5 @@
 import queue, threading, datetime
-from Packet import Packet
+#from p2p.Packet import Packet
 
 class WatchThread(threading.Thread):
 	def __init__(self, out_queue, send_queue, data_out):
