@@ -1,6 +1,7 @@
 import sys
 from tkinter import *
 from p2p import *
+from Handlers.MessageHandler import *
 
 class TkGui(Tk):
     def __init__(self, p2p):    
@@ -34,14 +35,15 @@ class TkGui(Tk):
         self.btn_quit = Button(self, text='Quit', command=self.quit)
         self.btn_send.pack(side=LEFT, expand=NO)
         self.btn_quit.pack(side=LEFT, expand=NO)
-        
-        # add the p2p handlers
-        self.p2p.addHandler(p2p.Types.MESSAGEHANDLER, p2p.Handlers.MessageHandler(self.p2p))
-        
+		
+        MsgHandler = MessageHandler(self.p2p)
+        self.p2p.addHandler(MsgHandler)
+        MsgHandler.setOutput(self.addMessage)
+		
         self.mainloop()
 
     def addMessage(self, connection, data):
-        addText("{0}: {1}".format(self.users[connection], data))
+        self.addText("{0}: {1}".format(connection, data))
         
     def send(self, *args):
         self.addText("You: {0}".format(self.eingabe.get()))

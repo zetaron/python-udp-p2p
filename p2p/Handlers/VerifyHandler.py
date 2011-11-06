@@ -6,3 +6,6 @@ class VerifyHandler(Handler):
 		toHandle.verified = True
 		print("YOU ARE LEGAL!!")
 		
+	def onEnable(self):
+		self.register(1,self.handle)
+		

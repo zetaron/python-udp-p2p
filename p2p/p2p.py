@@ -12,13 +12,13 @@ from p2p import *
 #from p2p.Types import Types
 
 class P2P(object):
-	def __init__(self, connections = [], port = 3333):
+	def __init__(self, peers = [], port = 3333):
 		self.sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 		self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		self.sock.bind(('', port))
 		
-		self.connections = connections
-		self.handler = {}
+		self.peerlist = peers
+		self.packetHandler = {}		#{1:[callback1,callback2],2:[callback4],3:[callback1,callback4]}
 		self.send_queue = queue.Queue()
 		self.out_queue = queue.Queue()
 		self.data_out = []
@@ -31,7 +31,8 @@ class P2P(object):
 		self.sendThread.start()
 		self.watchThread.start()
 		
-		self.addHandler(Types.VERIFYHANDLER, VerifyHandler(self))
+		self.addHandler(VerifyHandler(self))
+		self.addHandler(HandshakeHandler(self))
 
 	def stop(self):
 		self.receiveThread.stop()
@@ -44,12 +45,13 @@ class P2P(object):
 	def __del__(self):
 		self.stop()
 	
-	def addHandler(self, handlerId, handler):
-		self.handler[handlerId] = handler
-		
+	def addHandler(self, handler):
+		handler.onEnable()
+
 	def handle(self, packet):
-		if self.handler[packet.handlerId]:
-			self.handler[packet.handlerId].handle(packet)
+		if packet.handlerId in self.packetHandler:
+			for callback in self.packetHandler[packet.handlerId]:
+				callback(packet)
 	
 	def send(self, packet):
 		self.send_queue.put(packet)
