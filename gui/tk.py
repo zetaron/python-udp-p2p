@@ -1,49 +1,57 @@
 import sys
 from tkinter import *
+from tkinter import ttk
 from p2p import *
-from Handlers.MessageHandler import *
 
 class TkGui(Tk):
     def __init__(self, p2p):    
-        super(TkGui, self).__init__()
-        
+        Tk.__init__(self)
         self.p2p = p2p
+        self.peers = {}
         
-        # (ip, port): username
-        self.users = {}
-        
-        self.setupUi()
-        
-    def setupUi(self):
+    def start(self):
         self.title("Simple P2P Chat")
         
-        self.top = Frame(self)
-        self.chat = Text(self.top, width=90)
-        self.chat.pack(side=LEFT, fill=BOTH, expand=YES)
-        self.scroll = Scrollbar(self.top)
-        self.scroll.pack(side=RIGHT, fill=Y)
-        self.scroll.config(command=self.chat.yview)
-        self.chat.config(yscrollcommand=self.scroll.set)
-        self.top.pack(fill=BOTH, expand=YES)
+        menubar = Menu(self)
+        menubar.add_command(label="Add peer", command=self.addPeer)
+        self.config(menu=menubar)
         
-        self.eingabe = Entry(self, width=60)
-        self.eingabe.pack(side=LEFT, fill=BOTH, expand=YES)
+        mainframe = ttk.Frame(self)
+        mainframe.grid(column=0, row=0)
+        mainframe.grid_columnconfigure(0, weight=1)
+        mainframe.grid_rowconfigure(0, weight=1)
+
+        self.chat = Text(mainframe, width=50, state="disabled")
+        self.chat.grid(column=0, row=0, columnspan=2, sticky=(N,E,W,S))
+       
+        self.scroll = ttk.Scrollbar(mainframe, orient=VERTICAL, command=self.chat.yview)
+        self.scroll.grid(column=2, row=0, sticky=(N,S))
+        
+        self.chat.configure(yscrollcommand=self.scroll.set)
+        
+        self.eingabe = ttk.Entry(mainframe)
+        self.eingabe.grid(column=0, row=1, sticky=(W,E))
         self.eingabe.bind('<Return>', self.send)
         
-        self.btn_send = Button(self, text='Send', command=self.send)
+        self.btn_send = ttk.Button(mainframe, text='Send', command=self.send)
+        self.bind('<Destroy>', self.quit)
         
-        self.btn_quit = Button(self, text='Quit', command=self.quit)
-        self.btn_send.pack(side=LEFT, expand=NO)
-        self.btn_quit.pack(side=LEFT, expand=NO)
-		
-        MsgHandler = MessageHandler(self.p2p)
-        self.p2p.addHandler(MsgHandler)
-        MsgHandler.setOutput(self.addMessage)
-		
+        self.btn_send.grid(column=1, row=1, columnspan=2)
+        
+        #self.peers = StringVar()
+        self.peerlist = Listbox(mainframe) #listvariable=self.peers
+        self.peerlist.grid(column=3, row=0, sticky=(N,W,S,E))
+        
         self.mainloop()
-
+        
     def addMessage(self, connection, data):
         self.addText("{0}: {1}".format(connection, data))
+        
+    def addPeer(self):
+        self.p2p.send(Packet(("127.0.0.1", 3333), 3, "Peter"))
+        
+    def addList(self,name):
+        self.peerlist.insert(END,name)
         
     def send(self, *args):
         self.addText("You: {0}".format(self.eingabe.get()))
@@ -52,10 +60,11 @@ class TkGui(Tk):
         self.eingabe.delete(0, END)
         
     def addText(self, text):
+        self.chat.configure(state="normal")
         self.chat.insert(END, text + "\n")
+        self.chat.configure(state="disabled")
         
     def quit(self):
         self.p2p.close()
         self.destroy()
         super(TkGui, self).quit()
-        sys.exit(0)

@@ -19,7 +19,7 @@ class SendThread(threading.Thread):
 		self.running = 1
 		while self.running:
 			packet = self.send_queue.get(True)
-			self.socket.sendto(packet.pack(), packet.connection)
+			self.socket.sendto(packet.pack(), packet.address)
 			if packet.handlerId != Types.VERIFYHANDLER:
 				packet.last_sent = datetime.datetime.now()
 				packet.tries += 1

@@ -25,8 +25,7 @@ class ReceiveThread(threading.Thread):
 				
 				if packet.handlerId != Types.VERIFYHANDLER:
 					self.p2p.send(Packet(addr, Types.VERIFYHANDLER, packet.hash))
-				
-				# Implement handler callback
+                
 				self.p2p.handle(packet)
 		
 

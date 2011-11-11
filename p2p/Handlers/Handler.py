@@ -1,8 +1,9 @@
 #from p2p.Packet import Packet
 
 class Handler(object):
-	def __init__(self, p2p):
+	def __init__(self, p2p, *args):
 		self.p2p = p2p
+		self.onEnable(p2p, *args)
 		
 	def onEnable(self):
 		pass

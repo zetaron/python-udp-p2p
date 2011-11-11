@@ -2,7 +2,7 @@ import hashlib, struct
 
 class Packet(object):
 	def __init__(self, connection, handlerId, data):
-		self.connection = connection
+		self.address = connection
 		self.handlerId = handlerId
 		self.data = data
 		self.tries = 0

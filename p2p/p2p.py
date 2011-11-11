@@ -1,23 +1,13 @@
 import queue, socket
 from p2p import *
-#from p2p.Packet import Packet
-
-#from p2p.ReceiveThread import ReceiveThread
-#from p2p.SendThread import SendThread
-#from p2p.WatchThread import WatchThread
-
-#from p2p.Handlers.Handler import Handler
-#from p2p.Handlers.VerifyHandler import VerifyHandler
-
-#from p2p.Types import Types
 
 class P2P(object):
-	def __init__(self, peers = [], port = 3333):
+	def __init__(self, port = 3333):
 		self.sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 		self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		self.sock.bind(('', port))
 		
-		self.peerlist = peers
+		self.handler = []
 		self.packetHandler = {}		#{1:[callback1,callback2],2:[callback4],3:[callback1,callback4]}
 		self.send_queue = queue.Queue()
 		self.out_queue = queue.Queue()
@@ -32,7 +22,6 @@ class P2P(object):
 		self.watchThread.start()
 		
 		self.addHandler(VerifyHandler(self))
-		self.addHandler(HandshakeHandler(self))
 
 	def stop(self):
 		self.receiveThread.stop()
@@ -46,7 +35,7 @@ class P2P(object):
 		self.stop()
 	
 	def addHandler(self, handler):
-		handler.onEnable()
+		self.handler.append(handler)
 
 	def handle(self, packet):
 		if packet.handlerId in self.packetHandler:

@@ -2,13 +2,11 @@
 from p2p.Handlers import *
 
 class MessageHandler(Handler):
-	def onEnable(self):
-		self.register(2,self.onMessage)
-		
-	def setOutput(self,func):
-		self.callback = func
-		
-	def onMessage(self, packet):
-		self.callback(packet.connection, packet.data)
+    def onEnable(self, p2p, chat):
+        self.chat = chat
+        self.register(2,self.onMessage)
+
+    def onMessage(self, packet):
+        self.chat.addMessage(packet.address, packet.data)
 	
 	
