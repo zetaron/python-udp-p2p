@@ -16,6 +16,8 @@ class TkGui(Tk):
         menubar.add_command(label="Add peer", command=self.addPeer)
         self.config(menu=menubar)
         
+        self.resizable(width=FALSE, height=FALSE)
+        
         mainframe = ttk.Frame(self)
         mainframe.grid(column=0, row=0)
         mainframe.grid_columnconfigure(0, weight=1)
@@ -48,7 +50,17 @@ class TkGui(Tk):
         self.addText("{0}: {1}".format(connection, data))
         
     def addPeer(self):
-        self.p2p.send(Packet(("127.0.0.1", 3333), 3, "Peter"))
+        self.peerdialog = Toplevel(self)
+        self.peerdialog.title("Add a ip please")
+        self.peerdialog.resizable(width=FALSE, height=FALSE)  
+        self.peeraddr = ttk.Entry(self.peerdialog, width=30)
+        self.peeraddr.grid(column=0, row=0, sticky=(W, E))
+        
+        ttk.Button(self.peerdialog, text='Add', command=self.addPeerAction).grid(column=1, row=0, sticky=(W, E))
+
+    def addPeerAction(self):
+        self.p2p.send(Packet((self.peeraddr.get(), 3333), 3, "Peter")) #TODO: add Input validation!!!
+        self.peerdialog.destroy()
         
     def addList(self,name):
         self.peerlist.insert(END,name)
