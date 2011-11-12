@@ -7,6 +7,7 @@ class MessageHandler(Handler):
         self.register(2,self.onMessage)
 
     def onMessage(self, packet):
-        self.chat.addMessage(packet.address, packet.data)
+        peerdata = packet.data.split(':', 1)
+        self.chat.addMessage(peerdata[0], peerdata[1])
 	
 	

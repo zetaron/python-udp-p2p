@@ -16,4 +16,4 @@ class ChatPeerHandler(Handler):
             print("New Peer: {0}".format(peer.id))
             self.chat.peers[peer.id] = peer
             self.chat.addList(peer.id)
-            self.p2p.send(Packet(("127.0.0.1", 3333), 3, "Vincent"))
+            self.p2p.send(Packet(peer.address , 3, self.chat.nickname))
