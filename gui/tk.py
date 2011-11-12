@@ -26,6 +26,10 @@ class TkGui(Tk):
         mainframe.grid_rowconfigure(0, weight=1)
 
         self.chat = Text(mainframe, width=50, state="disabled")
+        
+        self.chat.tag_configure('answer', foreground='red', font=('Verdana', 10))
+        self.chat.tag_configure('normal', foreground='blue', font=('Verdana', 10, 'italic'))
+         
         self.chat.grid(column=0, row=0, columnspan=2, sticky=(N,E,W,S))
        
         self.scroll = ttk.Scrollbar(mainframe, orient=VERTICAL, command=self.chat.yview)
@@ -49,7 +53,7 @@ class TkGui(Tk):
         self.mainloop()
         
     def addMessage(self, name, msg):
-        self.addText("{0}: {1}".format(name, msg))
+        self.addText("{0}: {1}".format(name, msg), "answer")
         
     def addPeer(self):
         self.peerdialog = Toplevel(self)
@@ -91,9 +95,9 @@ class TkGui(Tk):
             self.p2p.send(packet)
         self.eingabe.delete(0, END)
         
-    def addText(self, text):
+    def addText(self, text, tag = 'normal'):
         self.chat.configure(state="normal")
-        self.chat.insert(END, text + "\n")
+        self.chat.insert(END, text + "\n", tag)
         self.chat.configure(state="disabled")
         
     def shutdown(self, *args):
